@@ -13,3 +13,8 @@ frontend/build
 
 
 key-pairs/Linux-VM-Key-6.pem
+
+fyp-devops-pipeline
+frontend
+register-app
+gitops-register-app
