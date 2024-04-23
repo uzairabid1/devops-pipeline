@@ -1,12 +1,14 @@
 from flask import Flask, render_template, jsonify
 import requests
 import time
+from flask_cors import CORS
 import threading
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 app = Flask(__name__)
+CORS(app)
 
 USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
