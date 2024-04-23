@@ -1,33 +1,23 @@
+// App.js
 import React, { useState } from "react";
 import VerticalStepper from "./components/VerticalStepper";
 import CistepsData from "./components/CIStepper";
 import CdstepsData from "./components/CdStepper";
 
 const App = () => {
-  const [ciStarted, setCIStarted] = useState(false);
-  const [cdStarted, setCDStarted] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [ciCompletedSteps, setCICompletedSteps] = useState([]);
+  const [cdCompletedSteps, setCDCompletedSteps] = useState([]);
+  const [ciVisible, setCiVisible] = useState(true); // State to track CI stepper visibility
+  const [cdVisible, setCdVisible] = useState(false); // State to track CD stepper visibility
 
-  const handleTabChange = (tabIndex) => {
-    setActiveTab(tabIndex);
+  const handleToggleCI = () => {
+    setCiVisible(true);
+    setCdVisible(false);
   };
 
-  const handleStartCI = () => {
-    setCIStarted(true);
-    setActiveTab(0); // Switch to CI tab when CI starts
-  };
-
-  const handleStartCD = () => {
-    setCDStarted(true);
-    setActiveTab(1); // Switch to CD tab when CD starts
-  };
-
-  const handleCIComplete = () => {
-    setCIStarted(false); // Reset CI status when completed
-  };
-
-  const handleCDComplete = () => {
-    setCDStarted(false); // Reset CD status when completed
+  const handleToggleCD = () => {
+    setCiVisible(false);
+    setCdVisible(true);
   };
 
   return (
@@ -39,57 +29,44 @@ const App = () => {
         <div className="flex">
           <button
             className={`w-1/2 px-1 py-2 transition duration-300 ease-in-out uppercase font-bold ${
-              activeTab === 0 && !cdStarted // Disable CI tab if CD has started
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed" // Disable style
-                : activeTab === 0
-                ? "bg-indigo-500 text-white" // Active CI tab style
-                : "bg-gray-200 text-gray-800 hover:bg-indigo-200" // Default CI tab style
+              ciVisible
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200 text-gray-800 hover:bg-indigo-200"
             } rounded-tl-lg`}
-            onClick={() => handleTabChange(0)}
-            disabled={!ciStarted && cdStarted} // Disable CI tab when CD has started
+            onClick={handleToggleCI}
           >
             CI Step
           </button>
           <button
             className={`w-1/2 px-4 py-2 transition duration-300 ease-in-out uppercase font-bold ${
-              activeTab === 1 && !ciStarted // Disable CD tab if CI has started
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed" // Disable style
-                : activeTab === 1
-                ? "bg-indigo-500 text-white" // Active CD tab style
-                : "bg-gray-200 text-gray-800 hover:bg-indigo-200" // Default CD tab style
+              cdVisible
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200 text-gray-800 hover:bg-indigo-200"
             } rounded-tr-lg`}
-            onClick={() => handleTabChange(1)}
-            disabled={!cdStarted && ciStarted} // Disable CD tab when CI has started
+            onClick={handleToggleCD}
           >
             CD Step
           </button>
         </div>
-        {activeTab === 0 && !ciStarted && (
-          <StartButton onClick={handleStartCI} />
+        {ciVisible && (
+          <VerticalStepper
+            stepsData={CistepsData}
+            onComplete={(completedStep) => {
+              setCICompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
+            }}
+            completedSteps={ciCompletedSteps}
+          />
         )}
-        {activeTab === 1 && !cdStarted && (
-          <StartButton onClick={handleStartCD} />
-        )}
-        {activeTab === 0 && ciStarted && (
-          <VerticalStepper stepsData={CistepsData} onComplete={handleCIComplete} />
-        )}
-        {activeTab === 1 && cdStarted && (
-          <VerticalStepper stepsData={CdstepsData} onComplete={handleCDComplete} />
+        {cdVisible && (
+          <VerticalStepper
+            stepsData={CdstepsData}
+            onComplete={(completedStep) => {
+              setCDCompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
+            }}
+            completedSteps={cdCompletedSteps}
+          />
         )}
       </div>
-    </div>
-  );
-};
-
-const StartButton = ({ onClick }) => {
-  return (
-    <div className="flex justify-center items-center text-center">
-      <button
-        className="mt-20 px-6 py-3 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-600 transition duration-300 ease-in-out"
-        onClick={onClick}
-      >
-        Start
-      </button>
     </div>
   );
 };

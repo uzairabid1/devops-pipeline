@@ -11,8 +11,8 @@ const StyledStepper = styled(Stepper)({
   padding: "20px",
 });
 
-const VerticalStepper = ({ stepsData, onComplete, isEnabled }) => {
-  const [activeStep, setActiveStep] = useState(0);
+const VerticalStepper = ({ stepsData, onComplete, completedSteps }) => {
+  const [activeStep, setActiveStep] = useState(completedSteps.length);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const VerticalStepper = ({ stepsData, onComplete, isEnabled }) => {
         const nextStep = prevActiveStep + 1;
         if (nextStep === stepsData.length) {
           setOpenSnackbar(true);
-          onComplete();
+          onComplete((prevCompletedSteps) => [...prevCompletedSteps, prevCompletedSteps.length]);
         }
         return nextStep;
       });
@@ -33,21 +33,18 @@ const VerticalStepper = ({ stepsData, onComplete, isEnabled }) => {
       clearTimeout(timer);
       clearTimeout(completionTimeout);
     };
-  }, [activeStep, stepsData, onComplete]);
+  }, [activeStep, stepsData, onComplete, completedSteps]);
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
-
 
   return (
     <Box className="flex justify-center items-center flex-col">
       <StyledStepper activeStep={activeStep} orientation="vertical">
         {stepsData.map((step, index) => {
           const isActive = index === activeStep;
-          const randomAnimationIndex = isActive
-            ? Math.floor(Math.random() * 3)
-            : -1;
+          const randomAnimationIndex = isActive ? Math.floor(Math.random() * 3) : -1;
           let animationClass = "";
           if (isActive) {
             switch (randomAnimationIndex) {
@@ -70,17 +67,13 @@ const VerticalStepper = ({ stepsData, onComplete, isEnabled }) => {
               <StepLabel>
                 <div
                   className={`text-2xl font-bold flex items-center ${
-                    index < activeStep
-                      ? "text-secondary-200"
-                      : "text-secondary-100"
+                    index < activeStep ? "text-secondary-200" : "text-secondary-100"
                   }`}
                 >
                   <span>{step.label}</span>
                   <span
                     className={`ml-4 ${
-                      index < activeStep
-                        ? "text-secondary-200"
-                        : "text-secondary-100"
+                      index < activeStep ? "text-secondary-200" : "text-secondary-100"
                     } ${isActive ? animationClass : ""}`}
                   >
                     {React.cloneElement(step.logo, { size: 32 })}
