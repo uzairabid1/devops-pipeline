@@ -1,18 +1,20 @@
-// App.js
 import React, { useState } from "react";
 import VerticalStepper from "./components/VerticalStepper";
 import CistepsData from "./components/CIStepper";
-import CdstepsData from "./components/CdStepper";
+
+// import CdstepsData from "./components/CdStepper";
 
 const App = () => {
   const [ciCompletedSteps, setCICompletedSteps] = useState([]);
-  const [cdCompletedSteps, setCDCompletedSteps] = useState([]);
-  const [ciVisible, setCiVisible] = useState(true); // State to track CI stepper visibility
-  const [cdVisible, setCdVisible] = useState(false); // State to track CD stepper visibility
+ 
+  // const [cdCompletedSteps, setCDCompletedSteps] = useState([]);
+  const [cdVisible, setCdVisible] = useState(false); 
+
+  const [ciVisible, setCiVisible] = useState(true);
 
   const handleToggleCI = () => {
     setCiVisible(true);
-    setCdVisible(false);
+    setCdVisible(false); 
   };
 
   const handleToggleCD = () => {
@@ -37,6 +39,7 @@ const App = () => {
           >
             CI Step
           </button>
+          
           <button
             className={`w-1/2 px-4 py-2 transition duration-300 ease-in-out uppercase font-bold ${
               cdVisible
@@ -58,14 +61,17 @@ const App = () => {
           />
         )}
         {cdVisible && (
-          <VerticalStepper
-            stepsData={CdstepsData}
-            onComplete={(completedStep) => {
-              setCDCompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
-            }}
-            completedSteps={cdCompletedSteps}
-          />
-        )}
+          <h1 className="text-4xl text-center font-bold text-indigo-500">CD will be live soon!</h1>
+          
+          //  <VerticalStepper
+          //   stepsData={CdstepsData}
+          //   onComplete={(completedStep) => {
+          //      setCDCompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
+          //   }}
+          //   completedSteps={cdCompletedSteps}
+          // /> 
+        
+        )} 
       </div>
     </div>
   );

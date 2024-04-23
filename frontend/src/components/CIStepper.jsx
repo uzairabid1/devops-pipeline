@@ -8,14 +8,15 @@ import { SiSonarqube, SiTrivy } from "react-icons/si";
 import { BsExclamationOctagon } from "react-icons/bs";
 import { LiaDocker } from "react-icons/lia";
 import { SiGithubactions } from "react-icons/si";
+import { BsFilePost } from "react-icons/bs";
 
 const CistepsData = [
   {
-    label: "Checkout SCM (Github Repo)",
+    label: "Declarative: Checkout SCM",
     logo: <FaGithub />
   },
   {
-    label: "Tool Install",
+    label: "Declarative: Tool Install",
     logo: <GrInstallOption />
   },
   {
@@ -23,7 +24,7 @@ const CistepsData = [
     logo: <MdCleaningServices />
   },
   {
-    label: "Checkout from SCM again",
+    label: "Checkout from SCM",
     logo: <FaGithub />
   },
   {
@@ -43,7 +44,7 @@ const CistepsData = [
     logo: <BsExclamationOctagon />
   },
   {
-    label: "Build and push Docker Image",
+    label: "Build & Push Docker Image",
     logo: <LiaDocker />
   },
   {
@@ -57,6 +58,10 @@ const CistepsData = [
   {
     label: "Trigger CD Pipeline",
     logo: <SiGithubactions />
+  },
+  {
+    label :"Decalrative: Post Actions",
+    logo: <BsFilePost/>
   }
 ];
 
