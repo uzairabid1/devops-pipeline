@@ -14,3 +14,136 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.dot-pulse {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #000000; 
+  animation: pulse 1.5s infinite;
+  margin-right: 4px; 
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+.logo-scale {
+  animation: logoScale 0.3s ease-in-out alternate infinite;
+}
+
+.logo-translate {
+  animation: logoTranslate 0.5s ease-in-out alternate infinite;
+}
+
+.logo-rotate {
+  animation: logoRotate 0.5s linear alternate infinite;
+}
+.logo-bounce {
+  animation: bounce 0.5s ease-in-out alternate infinite;
+}
+
+@keyframes logoScale {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes logoTranslate {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes logoRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.logo-fade-in {
+  animation: fade-in 0.5s ease-in;
+} 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.logo-drop-in {
+  animation: drop-in 0.5s forwards;
+}
+
+.pulse {
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keframes drop-in {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.logo-swing {
+  animation: swing 1s infinite alternate;
+}
+
+@keyframes swing {
+  0% {
+    transform: rotate(0);
+  }
+  
+  50% {
+    transform: rotate(65deg); 
+  }
+  100% {
+    transform: rotate(-15deg); 
+  }
+}
