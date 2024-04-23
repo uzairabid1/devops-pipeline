@@ -15,7 +15,7 @@ PASSWORD = os.getenv('PASSWORD')
 
 def fetch_data_from_jenkins():
     while True:
-        try:
+        # try:
             response = requests.get('http://18.224.139.9:8080/job/register-app-ci/lastBuild/wfapi/describe',
                                     auth=(USERNAME, PASSWORD))
             data = response.json()
@@ -23,7 +23,7 @@ def fetch_data_from_jenkins():
             stages = []
             for stage in data['stages']:
                 stages.append({
-                    'name': stage['name'],
+                    'name':   stage['name'],
                     'status': stage['status']
                 })
             
@@ -31,10 +31,71 @@ def fetch_data_from_jenkins():
             latest_stages = stages
             
 
-            time.sleep(0.01)
+            time.sleep(0.05)
         
-        except Exception as e:
-            print("Error fetching data from Jenkins API:", e)
+        # except Exception as e:
+        #     print("Error fetching data from Jenkins API:", e)
+
+
+@app.route('/test')
+def fetch_data():
+    list_f =   {  
+        "stages": [
+        {
+            "name": "Declarative: Checkout SCM",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Declarative: Tool Install",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Cleanup Workspace",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Checkout from SCM",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Build Application",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Test Application",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "SonarQube Analysis",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Quality Gate",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Build & Push Docker Image",
+            "status": "IN_PROGRESS"
+        },
+        {
+            "name": "Trivy Scan",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Cleanup Artifacts",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Trigger CD Pipeline",
+            "status": "SUCCESS"
+        },
+        {
+            "name": "Declarative: Post Actions",
+            "status": "SUCCESS"
+        }
+    ]
+    }
+    return list_f
 
 
 fetch_data_thread = threading.Thread(target=fetch_data_from_jenkins)
@@ -51,4 +112,4 @@ def get_stages():
     return jsonify({'stages': latest_stages})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=5001)
