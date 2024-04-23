@@ -75,7 +75,7 @@ def fetch_data():
         },
         {
             "name": "Build & Push Docker Image",
-            "status": "IN_PROGRESS"
+            "status": "SUCCESS"
         },
         {
             "name": "Trivy Scan",
@@ -87,7 +87,7 @@ def fetch_data():
         },
         {
             "name": "Trigger CD Pipeline",
-            "status": "SUCCESS"
+            "status": "IN_PROGRESS"
         },
         {
             "name": "Declarative: Post Actions",
