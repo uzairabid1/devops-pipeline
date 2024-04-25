@@ -1,15 +1,13 @@
+
 import React, { useState } from "react";
 import VerticalStepper from "./components/VerticalStepper";
 import CistepsData from "./components/CIStepper";
-
-// import CdstepsData from "./components/CdStepper";
+import CdstepsData from "./components/CdStepper";
 
 const App = () => {
   const [ciCompletedSteps, setCICompletedSteps] = useState([]);
- 
-  // const [cdCompletedSteps, setCDCompletedSteps] = useState([]);
+  const [cdCompletedSteps, setCDCompletedSteps] = useState([]);
   const [cdVisible, setCdVisible] = useState(false); 
-
   const [ciVisible, setCiVisible] = useState(true);
 
   const handleToggleCI = () => {
@@ -51,27 +49,27 @@ const App = () => {
             CD Step
           </button>
         </div>
-        {ciVisible && (
+        <div style={{ display: ciVisible ? 'block' : 'none' }}>
           <VerticalStepper
             stepsData={CistepsData}
             onComplete={(completedStep) => {
               setCICompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
             }}
-            completedSteps={ciCompletedSteps}
+            apiUrl="http://3.133.156.235/ci_stages" 
+            message = "CI messages Completed"
           />
-        )}
-        {cdVisible && (
-          <h1 className="text-4xl text-center font-bold text-indigo-500">CD will be live soon!</h1>
-          
-          //  <VerticalStepper
-          //   stepsData={CdstepsData}
-          //   onComplete={(completedStep) => {
-          //      setCDCompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
-          //   }}
-          //   completedSteps={cdCompletedSteps}
-          // /> 
-        
-        )} 
+        </div>
+        <div style={{ display: cdVisible ? 'block' : 'none' }}>
+          <VerticalStepper
+            stepsData={CdstepsData}
+            onComplete={(completedStep) => {
+               setCDCompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
+            }}
+            apiUrl="http://3.133.156.235/cd_stages" 
+            message ="CD Stages Completed"
+            link="http://a216f4b8e8f9741eba6c09ff79997c63-1448798318.us-east-2.elb.amazonaws.com:8080/webapp/"
+          /> 
+        </div>
       </div>
     </div>
   );

@@ -6,47 +6,58 @@ import StepLabel from "@mui/material/StepLabel";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { styled } from "@mui/system";
-import Link from '@mui/material/Link';
+import Link from "@mui/material/Link";
+
 const StyledStepper = styled(Stepper)({
   padding: "20px",
 });
 
-const VerticalStepper = ({ stepsData, onComplete }) => {
+const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [webstatus, setWebstatus] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarOpened, setSnackbarOpened] = useState(false);
+  const [snackbarShown, setSnackbarShown] = useState(false);
 
   useEffect(() => {
     let timeoutId;
-    
+
     const fetchData = async () => {
       try {
-        const response = await fetch("http://3.133.156.235/stages");
+        const response = await fetch(apiUrl);
         const data = await response.json();
-        const inProgressIndex = data.stages.findIndex((stage) => stage.status === "IN_PROGRESS" || stage.status === "FAILED");
+        const inProgressIndex = data.stages.findIndex(
+          (stage) => stage.status === "IN_PROGRESS" || stage.status === "FAILED"
+        );
         const totalSteps = stepsData.length;
 
-        // Set active step to the index of the first in-progress step if found, otherwise set it to the last completed step
         setActiveStep(inProgressIndex !== -1 ? inProgressIndex : totalSteps);
-        console.log('meow');
-        if (inProgressIndex === -1 && data.stages[totalSteps - 1].status === "SUCCESS" && !snackbarOpened) {
-          setOpenSnackbar(true);
-          setSnackbarOpened(true);
+
+        if (
+          inProgressIndex === -1 &&
+          data.stages[totalSteps - 1].status === "SUCCESS" &&
+          !snackbarShown
+        ) {
+          setSnackbarShown(true);
           onComplete();
           setWebstatus(true);
         }
       } catch (error) {
         console.error("Error fetching pipeline status:", error);
       } finally {
-        timeoutId = setTimeout(fetchData, 50);
+        timeoutId = setTimeout(fetchData, 100);
       }
     };
 
     fetchData();
 
-    return () => clearTimeout(timeoutId); 
-  }, [stepsData, onComplete, snackbarOpened]);
+    return () => clearTimeout(timeoutId);
+  }, [stepsData, onComplete, apiUrl, snackbarShown]);
+
+  useEffect(() => {
+    if (snackbarShown) {
+      setOpenSnackbar(true);
+    }
+  }, [snackbarShown]);
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -57,7 +68,8 @@ const VerticalStepper = ({ stepsData, onComplete }) => {
       <StyledStepper activeStep={activeStep} orientation="vertical">
         {stepsData.map((step, index) => {
           const isCompleted = index < activeStep;
-          const isActive = index >= activeStep && step.status !== "SUCCESS";
+          const isActive =
+            index >= activeStep && step.status !== "SUCCESS";
           const isInProgress = step.status === "IN_PROGRESS";
           let animationClass = "";
 
@@ -82,16 +94,26 @@ const VerticalStepper = ({ stepsData, onComplete }) => {
               <StepLabel>
                 <div
                   className={`text-2xl font-bold flex items-center ${
-                    isCompleted || isActive || isInProgress ? "text-secondary-200" : "text-secondary-100"
+                    isCompleted || isActive || isInProgress
+                      ? "text-secondary-200"
+                      : "text-secondary-100"
                   }`}
                 >
                   <span>{step.label}</span>
                   <span
                     className={`ml-4 ${
-                      isCompleted || isActive || isInProgress ? "text-secondary-200" : "text-secondary-100"
+                      isCompleted || isActive || isInProgress
+                        ? "text-secondary-200"
+                        : "text-secondary-100"
                     } ${isActive || isInProgress ? animationClass : ""}`}
                   >
-                    <span className={isActive || isInProgress ? "text-secondary-100" : ""}>{React.cloneElement(step.logo, { size: 32 })}</span>
+                    <span
+                      className={
+                        isActive || isInProgress ? "text-secondary-100" : ""
+                      }
+                    >
+                      {React.cloneElement(step.logo, { size: 32 })}
+                    </span>
                   </span>
                 </div>
               </StepLabel>
@@ -106,15 +128,13 @@ const VerticalStepper = ({ stepsData, onComplete }) => {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <MuiAlert elevation={6} variant="filled" severity="success">
-          All Tasks Completed!
+          {message}
         </MuiAlert>
       </Snackbar>
-      {webstatus && (
-        
-        <Link href="http://a216f4b8e8f9741eba6c09ff79997c63-1448798318.us-east-2.elb.amazonaws.com:8080/webapp/">your website is deployed</Link>
-        )}
+      {webstatus && link && (
+        <Link href={link}>your website is deployed</Link>
+      )}
     </Box>
   );
 };
-
 export default VerticalStepper;
