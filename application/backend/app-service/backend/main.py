@@ -11,30 +11,50 @@ app = Flask(__name__)
 CORS(app)
 
 USERNAME = os.getenv('USERNAME')
+if USERNAME == 'pc':
+    USERNAME = os.getenv('JENKINS_USER')
+    
 PASSWORD = os.getenv('PASSWORD')
+print(USERNAME)
+print(PASSWORD)
 
-def fetch_data_from_jenkins():
+def fetch_data_from_ci():
     while True:
-        # try:
-            response = requests.get('http://18.224.139.9:8080/job/register-app-ci/lastBuild/wfapi/describe',
-                                    auth=(USERNAME, PASSWORD))
-            data = response.json()
-
-            stages = []
-            for stage in data['stages']:
-                stages.append({
-                    'name':   stage['name'],
-                    'status': stage['status']
-                })
-            
-            global latest_stages
-            latest_stages = stages
-            
-
-            time.sleep(0.05)
+        response = requests.get('http://3.133.203.61:8080/job/register-app-ci/lastBuild/wfapi/describe',
+                                auth=(USERNAME, PASSWORD))
+        print(response)
+        data = response.json()
+        stages = []
+        for stage in data['stages']:
+            stages.append({
+                'name':   stage['name'],
+                'status': stage['status']
+            })
         
-        # except Exception as e:
-        #     print("Error fetching data from Jenkins API:", e)
+        global latest_ci_stages
+        latest_ci_stages = stages
+        
+
+        time.sleep(0.10)
+
+def fetch_data_from_cd():
+    while True:
+        response = requests.get('http://3.133.203.61:8080/job/gitops-register-app-cd/lastBuild/wfapi/describe',
+                                auth=(USERNAME, PASSWORD))
+        data = response.json()
+
+        stages = []
+        for stage in data['stages']:
+            stages.append({
+                'name':   stage['name'],
+                'status': stage['status']
+            })
+        
+        global latest_cd_stages
+        latest_cd_stages = stages
+        
+
+        time.sleep(0.10)
 
 
 @app.route('/test')
@@ -98,18 +118,25 @@ def fetch_data():
     return list_f
 
 
-fetch_data_thread = threading.Thread(target=fetch_data_from_jenkins)
-fetch_data_thread.start()
+fetch_data_ci = threading.Thread(target=fetch_data_from_ci)
+fetch_data_cd = threading.Thread(target=fetch_data_from_cd)
+fetch_data_ci.start()
+fetch_data_cd.start()
 
-latest_stages = []
+latest_ci_stages = []
+latest_cd_stages = []
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/stages')
-def get_stages():
-    return jsonify({'stages': latest_stages})
+@app.route('/ci_stages')
+def get_ci_stages():
+    return jsonify({'stages': latest_ci_stages})
+
+@app.route('/cd_stages')
+def get_cd_stages():
+    return jsonify({'stages': latest_cd_stages})
 
 if __name__ == '__main__':
-    app.run(debug=True,port=5001)
+    app.run(debug=True,port=5000)
