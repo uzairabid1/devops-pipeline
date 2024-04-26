@@ -10,6 +10,12 @@ frontend/coverage
 
 # production
 frontend/build
-
-
 key-pairs/Linux-VM-Key-6.pem
+
+fyp-devops-pipeline
+
+register-app
+gitops-register-app
+
+# .env files for backend
+application/backend/app-service/backend/.env
