@@ -18,3 +18,6 @@ fyp-devops-pipeline
 frontend
 register-app
 gitops-register-app
+
+# .env files for backend
+application/backend/app-service/backend/.env

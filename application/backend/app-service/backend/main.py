@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 USERNAME = os.getenv('USERNAME')
-if USERNAME == 'pc':
+if USERNAME == 'pc' or USERNAME == 'user':
     USERNAME = os.getenv('JENKINS_USER')
 
 PASSWORD = os.getenv('PASSWORD')
