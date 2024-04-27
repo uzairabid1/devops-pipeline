@@ -11,7 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-USERNAME = os.getenv('USERNAME')
+USERNAME = os.getenv('JENKINS_USERNAME')
 if USERNAME == 'pc' or USERNAME == 'user':
     USERNAME = os.getenv('JENKINS_USER')
 

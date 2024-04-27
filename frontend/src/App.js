@@ -50,27 +50,27 @@ const App = () => {
           </button>
         </div>
         <div style={{ display: ciVisible ? 'block' : 'none' }}>
-        <BuildInfo apiUrl="http://3.133.156.235/ci_stages"/>
+        <BuildInfo apiurl="http://127.0.0.1:5000/ci_stages"/>
         
           <VerticalStepper
             stepsData={CistepsData}
             onComplete={(completedStep) => {
               setCICompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
             }}
-            apiUrl="http://3.133.156.235/ci_stages" 
+            apiUrl="http://127.0.0.1:5000/ci_stages" 
             message = "CI messages Completed"
           />
           
         </div>
         <div style={{ display: cdVisible ? 'block' : 'none' }}>
-          <BuildInfo apiUrl="http://3.133.156.235/cd_stages"/>
+          <BuildInfo apiurl="http://127.0.0.1:5000/cd_stages"/>
 
           <VerticalStepper
             stepsData={CdstepsData}
             onComplete={(completedStep) => {
                setCDCompletedSteps((prevCompletedSteps) => [...prevCompletedSteps, completedStep]);
             }}
-            apiUrl="http://3.133.156.235/cd_stages" 
+            apiUrl="http://127.0.0.1:5000/cd_stages" 
             message ="CD Stages Completed"
             link="http://a216f4b8e8f9741eba6c09ff79997c63-1448798318.us-east-2.elb.amazonaws.com:8080/webapp/"
           /> 

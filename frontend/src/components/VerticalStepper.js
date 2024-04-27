@@ -3,10 +3,13 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
+import Badge from "@mui/material/Badge";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { styled } from "@mui/system";
 import Link from "@mui/material/Link";
+
+import MdAvTimer from "@mui/icons-material/AvTimer";
 
 const StyledStepper = styled(Stepper)({
   padding: "20px",
@@ -17,6 +20,7 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
   const [webstatus, setWebstatus] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarShown, setSnackbarShown] = useState(false);
+  const [stagesData, setStagesData] = useState([]);
 
   useEffect(() => {
     let timeoutId;
@@ -25,16 +29,17 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        const inProgressIndex = data.stages.findIndex(
+        setStagesData(data.stages.stages);
+        const inProgressIndex = data.stages.stages.findIndex(
           (stage) => stage.status === "IN_PROGRESS" || stage.status === "FAILED"
         );
-        const totalSteps = stepsData.length;
+        const totalSteps = data.stages.stages.length;
 
         setActiveStep(inProgressIndex !== -1 ? inProgressIndex : totalSteps);
 
         if (
           inProgressIndex === -1 &&
-          data.stages[totalSteps - 1].status === "SUCCESS" &&
+          data.stages.stages[totalSteps - 1].status === "SUCCESS" &&
           !snackbarShown
         ) {
           setSnackbarShown(true);
@@ -51,7 +56,7 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
     fetchData();
 
     return () => clearTimeout(timeoutId);
-  }, [stepsData, onComplete, apiUrl, snackbarShown]);
+  }, [onComplete, apiUrl, snackbarShown]);
 
   useEffect(() => {
     if (snackbarShown) {
@@ -63,14 +68,24 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
     setOpenSnackbar(false);
   };
 
+  const formatDuration = (duration) => {
+    if (duration >= 60) {
+      const minutes = Math.floor(duration / 60);
+      const seconds = Math.round(duration % 60);
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return `${Math.round(duration)}s`;
+    }
+  };
+
   return (
     <Box className="flex justify-center items-center flex-col">
       <StyledStepper activeStep={activeStep} orientation="vertical">
-        {stepsData.map((step, index) => {
+        {stagesData.map((stage, index) => {
           const isCompleted = index < activeStep;
           const isActive =
-            index >= activeStep && step.status !== "SUCCESS";
-          const isInProgress = step.status === "IN_PROGRESS";
+            index >= activeStep && stage.status !== "SUCCESS";
+          const isInProgress = stage.status === "IN_PROGRESS";
           let animationClass = "";
 
           if (isActive || isInProgress) {
@@ -99,7 +114,7 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
                       : "text-secondary-100"
                   }`}
                 >
-                  <span>{step.label}</span>
+                  <span>{stage.name}</span>
                   <span
                     className={`ml-4 ${
                       isCompleted || isActive || isInProgress
@@ -112,9 +127,17 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
                         isActive || isInProgress ? "text-secondary-100" : ""
                       }
                     >
-                      {React.cloneElement(step.logo, { size: 32 })}
+                      {React.cloneElement(stepsData[index].logo, { size: 32 })}
                     </span>
                   </span>
+                  {isCompleted && (
+                    <Badge
+                      badgeContent={formatDuration(stage.duration || 0)}
+                      color="success"
+                    >
+                      <MdAvTimer />
+                    </Badge>
+                  )}
                 </div>
               </StepLabel>
             </Step>
@@ -137,4 +160,5 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
     </Box>
   );
 };
+
 export default VerticalStepper;
