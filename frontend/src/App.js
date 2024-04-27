@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import VerticalStepper from "./components/VerticalStepper";
 import CistepsData from "./components/CIStepper";
 import CdstepsData from "./components/CdStepper";
-
+import BuildInfo from "./components/BuildInfo";
 const App = () => {
   const [ciCompletedSteps, setCICompletedSteps] = useState([]);
   const [cdCompletedSteps, setCDCompletedSteps] = useState([]);
@@ -50,6 +50,8 @@ const App = () => {
           </button>
         </div>
         <div style={{ display: ciVisible ? 'block' : 'none' }}>
+        <BuildInfo apiUrl="http://3.133.156.235/ci_stages"/>
+        
           <VerticalStepper
             stepsData={CistepsData}
             onComplete={(completedStep) => {
@@ -58,8 +60,11 @@ const App = () => {
             apiUrl="http://3.133.156.235/ci_stages" 
             message = "CI messages Completed"
           />
+          
         </div>
         <div style={{ display: cdVisible ? 'block' : 'none' }}>
+          <BuildInfo apiUrl="http://3.133.156.235/cd_stages"/>
+
           <VerticalStepper
             stepsData={CdstepsData}
             onComplete={(completedStep) => {
