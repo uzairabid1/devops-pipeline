@@ -48,16 +48,16 @@ def fetch_data_from_ci():
                 'time_started': time_started
             })
         
-        result = {
+        result_ci = {
             'build_id': build_id,
             'build_status': build_status,
             'stages': stages
         }
         
         global latest_ci_stages
-        latest_ci_stages = result
+        latest_ci_stages = result_ci
         
-        time.sleep(0.10)
+        time.sleep(0.5)
 
 def fetch_data_from_cd():
     while True:
@@ -77,17 +77,17 @@ def fetch_data_from_cd():
                 'time_started': time_started
             })
         
-        result = {
+        result_cd = {
             'build_id': build_id,
             'build_status': build_status,
             'stages': stages
         }
         
         global latest_cd_stages
-        latest_cd_stages = result
+        latest_cd_stages = result_cd
         
 
-        time.sleep(0.10)
+        time.sleep(0.5)
 
 
 @app.route('/test')
@@ -172,4 +172,4 @@ def get_cd_stages():
     return jsonify({'stages': latest_cd_stages})
 
 if __name__ == '__main__':
-    app.run(debug=True,port=5000)
+    app.run(debug=True,port=5001)
