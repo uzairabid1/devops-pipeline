@@ -3,13 +3,12 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-import Badge from "@mui/material/Badge";
+
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { styled } from "@mui/system";
 import Link from "@mui/material/Link";
-
-import MdAvTimer from "@mui/icons-material/AvTimer";
+import { IoTimeOutline } from "react-icons/io5";
 
 const StyledStepper = styled(Stepper)({
   padding: "20px",
@@ -107,36 +106,40 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
           return (
             <Step key={index} completed={isCompleted}>
               <StepLabel>
-                <div
-                  className={`text-2xl font-bold flex items-center ${
-                    isCompleted || isActive || isInProgress
-                      ? "text-secondary-200"
-                      : "text-secondary-100"
-                  }`}
-                >
-                  <span>{stage.name}</span>
-                  <span
-                    className={`ml-4 ${
+                <div className="flex justify-between items-center w-full">
+                  <div
+                    className={`text-2xl font-bold flex items-center ${
                       isCompleted || isActive || isInProgress
                         ? "text-secondary-200"
                         : "text-secondary-100"
-                    } ${isActive || isInProgress ? animationClass : ""}`}
+                    }`}
                   >
+                    <span>{stage.name}</span>
                     <span
-                      className={
-                        isActive || isInProgress ? "text-secondary-100" : ""
-                      }
+                      className={`ml-4 ${
+                        isCompleted || isActive || isInProgress
+                          ? "text-secondary-200"
+                          : "text-secondary-100"
+                      } ${isActive || isInProgress ? animationClass : ""}`}
                     >
-                      {React.cloneElement(stepsData[index].logo, { size: 32 })}
+                      <span
+                        className={
+                          isActive || isInProgress ? "text-secondary-100" : ""
+                        }
+                      >
+                        {React.cloneElement(stepsData[index].logo, {
+                          size: 32,
+                        })}
+                      </span>
                     </span>
-                  </span>
+                  </div>
                   {isCompleted && (
-                    <Badge
-                      badgeContent={formatDuration(stage.duration || 0)}
-                      color="success"
-                    >
-                      <MdAvTimer />
-                    </Badge>
+                    <div className="inline-flex items-center rounded-md bg-green-50 px-3 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 ml-4">
+                      <IoTimeOutline size={20} />
+                      <span className="ml-1">
+                        {formatDuration(stage.duration || 0)}
+                      </span>
+                    </div>
                   )}
                 </div>
               </StepLabel>
@@ -154,9 +157,7 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
           {message}
         </MuiAlert>
       </Snackbar>
-      {webstatus && link && (
-        <Link href={link}>your website is deployed</Link>
-      )}
+      {webstatus && link && <Link href={link}>Your website is deployed</Link>}
     </Box>
   );
 };

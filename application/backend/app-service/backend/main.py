@@ -14,6 +14,7 @@ CORS(app)
 USERNAME = os.getenv('JENKINS_USERNAME')
 if USERNAME == 'pc' or USERNAME == 'user':
     USERNAME = os.getenv('JENKINS_USER')
+USERNAME = 'uzairabid1'
 
 PASSWORD = os.getenv('PASSWORD')
 print(USERNAME)
