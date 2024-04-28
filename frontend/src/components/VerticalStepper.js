@@ -48,7 +48,7 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
       } catch (error) {
         console.error("Error fetching pipeline status:", error);
       } finally {
-        timeoutId = setTimeout(fetchData, 100);
+        timeoutId = setTimeout(fetchData, 500);
       }
     };
 
