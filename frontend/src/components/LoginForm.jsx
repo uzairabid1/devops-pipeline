@@ -16,7 +16,7 @@ const LoginForm = ({ onLogin }) => {
     formData.append('email', username);
     formData.append('password', password);
     
-    fetch('http://127.0.0.1:5001/login', {
+    fetch('http://3.133.156.235/login', {
       method: 'POST',
       body: formData,
     })
