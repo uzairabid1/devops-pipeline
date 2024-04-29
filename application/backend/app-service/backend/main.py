@@ -201,7 +201,7 @@ def get_ci_stages():
     return jsonify({'stages': latest_ci_stages})
 
 @app.route('/cd_stages')
-def get_ci_stages():
+def get_cd_stages():
     return jsonify({'stages': latest_cd_stages})
 
 @app.route('/login', methods=['POST'])
