@@ -44,7 +44,7 @@ const SignUpForm = ({onSignUp}) => {
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="flex flex-col justify-center items-center w-2/5">
         <img src={Intellilogo} alt="Brand LOGO" className="h-56 h-56  rounded-3xl" />
-        <p className='mt-4 text-indigo-600 text-center items-center flex-nowrap '> <Link to='/'>2024 © IntelliDevops </Link></p>
+        <p className='mt-4 text-indigo-600 text-center items-center flex-nowrap '> <Link to='/'>2024 © IntelliDeploy </Link></p>
         
       </div>
       <div className="bg-white p-8 rounded-md shadow-md w-2/5 mr-2">
