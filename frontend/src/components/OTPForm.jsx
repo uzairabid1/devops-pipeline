@@ -42,7 +42,7 @@ const OTPForm = ({ Signupemail }) => {
           <img src={Intellilogo} alt="Brand LOGO" className="h-56 rounded-3xl" />
           <p className="mt-4 text-indigo-600 text-center items-center flex-nowrap ">
             {' '}
-            <Link to="/">2024 © IntelliDevops </Link>
+            <Link to="/">2024 © IntelliDeploy </Link>
           </p>
         </div>
         <div className="bg-white p-8 rounded-md shadow-md w-2/5 mr-2 h-96">
