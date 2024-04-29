@@ -200,6 +200,10 @@ def index():
 def get_ci_stages():
     return jsonify({'stages': latest_ci_stages})
 
+@app.route('/cd_stages')
+def get_ci_stages():
+    return jsonify({'stages': latest_cd_stages})
+
 @app.route('/login', methods=['POST'])
 def user_login():
     email_form = request.form.get('email')
