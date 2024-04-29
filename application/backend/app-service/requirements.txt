@@ -3,4 +3,3 @@ Requests==2.31.0
 flask_cors
 flask_mail
 bcrypt
-sqlite3
