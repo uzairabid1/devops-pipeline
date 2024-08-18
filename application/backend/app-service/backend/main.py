@@ -101,7 +101,7 @@ def fetch_data_from_ci():
         global latest_ci_stages
         latest_ci_stages = result_ci
         
-        time.sleep(1)
+        time.sleep(0.1)
 
 def fetch_data_from_cd():
     while True:
@@ -144,7 +144,7 @@ def fetch_data_from_cd():
         latest_cd_stages = result_cd
         
 
-        time.sleep(1)
+        time.sleep(0.1)
 
 
 @app.route('/test')
