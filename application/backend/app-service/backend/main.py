@@ -26,11 +26,9 @@ mail = Mail(app)
 
 
 USERNAME = os.getenv('JENKINS_USERNAME')
-if USERNAME == 'pc' or USERNAME == 'user':
-    USERNAME = os.getenv('JENKINS_USER')
-USERNAME = 'uzairabid1'
+PASSWORD = os.getenv('JENKINS_PASSWORD')
+JENKINS_URL = os.getenv('JENKINS_URL')
 
-PASSWORD = os.getenv('PASSWORD')
 print(USERNAME)
 print(PASSWORD)
 
@@ -64,7 +62,7 @@ def milis_to_datetime(timestamp):
 
 def fetch_data_from_ci():
     while True:
-        response = requests.get('http://3.133.203.61:8080/job/register-app-ci/lastBuild/wfapi/describe',
+        response = requests.get(f'{JENKINS_URL}/job/register-app-ci/lastBuild/wfapi/describe',
                                 auth=(USERNAME, PASSWORD))
         data = response.json()
         
@@ -74,11 +72,24 @@ def fetch_data_from_ci():
         for stage in data.get('stages', []):
             duration = float(int(stage['durationMillis'])/1000)
             time_started = milis_to_datetime(int(stage['startTimeMillis']))
+            detailed_link = stage.get('_links').get('self').get('href')
+            detailed_response = requests.get(f'{JENKINS_URL}{detailed_link}', auth=(USERNAME, PASSWORD)).json()
+            command = detailed_response.get('stageFlowNodes')[-1].get('parameterDescription')
+            last_stage_log_link = detailed_response.get('stageFlowNodes')[-1].get('_links').get('log').get('href')
+            last_stage_log_response = requests.get(f'{JENKINS_URL}{last_stage_log_link}', auth=(USERNAME, PASSWORD)).json()
+
+            log = {
+                'command': command,
+                'status': last_stage_log_response.get('nodeStatus',''),
+                'text': last_stage_log_response.get('text','')
+            }          
+
             stages.append({
                 'name':   stage['name'],
                 'status': stage['status'],
                 'duration': duration,
-                'time_started': time_started
+                'time_started': time_started,
+                'logs': log
             })
         
         result_ci = {
@@ -90,11 +101,11 @@ def fetch_data_from_ci():
         global latest_ci_stages
         latest_ci_stages = result_ci
         
-        time.sleep(0.10)
+        time.sleep(1)
 
 def fetch_data_from_cd():
     while True:
-        response = requests.get('http://3.133.203.61:8080/job/gitops-register-app-cd/lastBuild/wfapi/describe',
+        response = requests.get(f'{JENKINS_URL}/job/gitops-register-app-cd/lastBuild/wfapi/describe',
                                 auth=(USERNAME, PASSWORD))
         data = response.json()
         build_id = int(data.get('id'))
@@ -103,11 +114,24 @@ def fetch_data_from_cd():
         for stage in data.get('stages', []):
             duration = float(int(stage['durationMillis'])/1000)
             time_started = milis_to_datetime(int(stage['startTimeMillis']))
+            detailed_link = stage.get('_links').get('self').get('href')
+            detailed_response = requests.get(f'{JENKINS_URL}{detailed_link}', auth=(USERNAME, PASSWORD)).json()
+            command = detailed_response.get('stageFlowNodes')[-1].get('parameterDescription')
+            last_stage_log_link = detailed_response.get('stageFlowNodes')[-1].get('_links').get('log').get('href')
+            last_stage_log_response = requests.get(f'{JENKINS_URL}{last_stage_log_link}', auth=(USERNAME, PASSWORD)).json()
+
+            log = {
+                'command': command,
+                'status': last_stage_log_response.get('nodeStatus',''),
+                'text': last_stage_log_response.get('text','')
+            }          
+
             stages.append({
                 'name':   stage['name'],
                 'status': stage['status'],
                 'duration': duration,
-                'time_started': time_started
+                'time_started': time_started,
+                'logs': log
             })
         
         result_cd = {
@@ -120,7 +144,7 @@ def fetch_data_from_cd():
         latest_cd_stages = result_cd
         
 
-        time.sleep(0.10)
+        time.sleep(1)
 
 
 @app.route('/test')
@@ -165,15 +189,15 @@ def fetch_data():
         },
         {
             "name": "Trivy Scan",
-            "status": "SUCCESS"
+            "status": "IN_PROGRESS"
         },
         {
             "name": "Cleanup Artifacts",
-            "status": "SUCCESS"
+            "status": "FAIL"
         },
         {
             "name": "Trigger CD Pipeline",
-            "status": "IN_PROGRESS"
+            "status": "SUCCESS"
         },
         {
             "name": "Declarative: Post Actions",

@@ -11,12 +11,12 @@ const LoginForm = ({ onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    
     const formData = new FormData();
     formData.append('email', username);
     formData.append('password', password);
     
-    fetch('http://3.133.156.235/login', {
+    fetch('http://127.0.0.1:5000/login', {
       method: 'POST',
       body: formData,
     })
