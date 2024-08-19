@@ -60,6 +60,16 @@ def milis_to_datetime(timestamp):
     formatted_time = date_time.strftime("%H:%M")
     return formatted_date + " " + formatted_time
 
+latest_ci_stages = {}
+latest_cd_stages = {}
+ci_lock = threading.Lock()
+cd_lock = threading.Lock()
+
+@app.after_request
+def add_header(response):
+    response.cache_control.no_store = True
+    return response
+
 
 def fetch_data_from_ci():
     while True:
@@ -73,24 +83,11 @@ def fetch_data_from_ci():
         for stage in data.get('stages', []):
             duration = float(int(stage['durationMillis'])/1000)
             time_started = milis_to_datetime(int(stage['startTimeMillis']))
-            detailed_link = stage.get('_links').get('self').get('href')
-            detailed_response = requests.get(f'{JENKINS_URL}{detailed_link}', auth=(USERNAME, PASSWORD)).json()
-            command = detailed_response.get('stageFlowNodes')[-1].get('parameterDescription')
-            last_stage_log_link = detailed_response.get('stageFlowNodes')[-1].get('_links').get('log').get('href')
-            last_stage_log_response = requests.get(f'{JENKINS_URL}{last_stage_log_link}', auth=(USERNAME, PASSWORD)).json()
-
-            log = {
-                'command': command,
-                'status': last_stage_log_response.get('nodeStatus',''),
-                'text': last_stage_log_response.get('text','')
-            }          
-
             stages.append({
                 'name':   stage['name'],
                 'status': stage['status'],
                 'duration': duration,
-                'time_started': time_started,
-                'logs': log
+                'time_started': time_started
             })
         
         result_ci = {
@@ -102,7 +99,7 @@ def fetch_data_from_ci():
         global latest_ci_stages
         latest_ci_stages = result_ci
         
-        time.sleep(0.1)
+        time.sleep(0.10)
 
 def fetch_data_from_cd():
     while True:
@@ -115,24 +112,11 @@ def fetch_data_from_cd():
         for stage in data.get('stages', []):
             duration = float(int(stage['durationMillis'])/1000)
             time_started = milis_to_datetime(int(stage['startTimeMillis']))
-            detailed_link = stage.get('_links').get('self').get('href')
-            detailed_response = requests.get(f'{JENKINS_URL}{detailed_link}', auth=(USERNAME, PASSWORD)).json()
-            command = detailed_response.get('stageFlowNodes')[-1].get('parameterDescription')
-            last_stage_log_link = detailed_response.get('stageFlowNodes')[-1].get('_links').get('log').get('href')
-            last_stage_log_response = requests.get(f'{JENKINS_URL}{last_stage_log_link}', auth=(USERNAME, PASSWORD)).json()
-
-            log = {
-                'command': command,
-                'status': last_stage_log_response.get('nodeStatus',''),
-                'text': last_stage_log_response.get('text','')
-            }          
-
             stages.append({
                 'name':   stage['name'],
                 'status': stage['status'],
                 'duration': duration,
-                'time_started': time_started,
-                'logs': log
+                'time_started': time_started
             })
         
         result_cd = {
@@ -145,7 +129,7 @@ def fetch_data_from_cd():
         latest_cd_stages = result_cd
         
 
-        time.sleep(0.1)
+        time.sleep(0.10)
 
 
 @app.route('/test')
@@ -190,15 +174,15 @@ def fetch_data():
         },
         {
             "name": "Trivy Scan",
-            "status": "IN_PROGRESS"
+            "status": "SUCCESS"
         },
         {
             "name": "Cleanup Artifacts",
-            "status": "FAIL"
+            "status": "SUCCESS"
         },
         {
             "name": "Trigger CD Pipeline",
-            "status": "SUCCESS"
+            "status": "IN_PROGRESS"
         },
         {
             "name": "Declarative: Post Actions",
