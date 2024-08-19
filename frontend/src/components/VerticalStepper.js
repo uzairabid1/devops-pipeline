@@ -3,12 +3,17 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { styled } from "@mui/system";
 import Link from "@mui/material/Link";
 import { IoTimeOutline } from "react-icons/io5";
+import { GrGoogle } from "react-icons/gr";
 
 const StyledStepper = styled(Stepper)({
   padding: "20px",
@@ -127,7 +132,7 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
                           isActive || isInProgress ? "text-secondary-100" : ""
                         }
                       >
-                        {React.cloneElement(stepsData[index].logo, {
+                        {React.cloneElement(stepsData[index]?.logo || <GrGoogle />, {
                           size: 32,
                         })}
                       </span>
@@ -143,6 +148,22 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
                   )}
                 </div>
               </StepLabel>
+              {stage.logs.text && (
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`panel${index}-content`}
+                    id={`panel${index}-header`}
+                  >
+                    <Typography>View Logs</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography component="pre" className="whitespace-pre-wrap">
+                      {stage.logs.text}
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              )}
             </Step>
           );
         })}

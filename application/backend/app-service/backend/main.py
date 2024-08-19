@@ -41,13 +41,13 @@ def create_connection():
 
 def send_verification_email(email, otp):
     msg = Message('Welcome to IntelliDeploy - Verify your email',
-                  sender='rmuuu123@gmail.com', recipients=[email])
+                  sender='ahmer183gamerz@gmail.com', recipients=[email])
     msg.body = f'Welcome to IntelliDeploy. Please verify your email by entering the Verification Code: {otp}'
     mail.send(msg)
 
 def send_back_email(email):
     msg = Message('IntelliDeploy - You are registered successfully',
-                  sender='rmuuu123@gmail.com',recipients=[email])
+                  sender='ahmer183gamerz@gmail.com',recipients=[email])
     msg.body = f'Welcome to IntelliDeploy.We are glad to have you on board.'
     mail.send(msg)
 

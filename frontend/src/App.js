@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import VerticalStepper from "./components/VerticalStepper";
 import CistepsData from "./components/CIStepper";
 import CdstepsData from "./components/CdStepper";
@@ -28,12 +28,10 @@ const App = () => {
   };
 
   const handleLogin = (data) => {
-    console.log(data);
     setLoggedInName(data);
   };
 
   const handleSignup = (data) => {
-    console.log(data);
     setSignupemail(data);
   };
 
@@ -43,9 +41,9 @@ const App = () => {
         <Route
           path="/"
           element={
-            <>
-              <Navbar loggedInName={loggedInName} />
-              {loggedInName && (
+            loggedInName ? (
+              <>
+                <Navbar loggedInName={loggedInName} />
                 <div className="flex flex-col items-center justify-center mt-20 mb-20">
                   <h1 className="text-secondary-200 mb-10 text-4xl tracking-wide font-bold">
                     Pipeline Stages
@@ -84,7 +82,7 @@ const App = () => {
                           ]);
                         }}
                         apiUrl="http://127.0.0.1:5000/ci_stages"
-                        message="CI messages Completed"
+                        message="CI Stages Completed"
                       />
                     </div>
                     <div style={{ display: cdVisible ? "block" : "none" }}>
@@ -104,15 +102,14 @@ const App = () => {
                     </div>
                   </div>
                 </div>
-              )}
-            </>
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           }
         />
         <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
-        <Route
-          path="/signup"
-          element={<SignUpForm onSignUp={handleSignup} />}
-        />
+        <Route path="/signup" element={<SignUpForm onSignUp={handleSignup} />} />
         <Route path="/verify" element={<OTPForm Signupemail={Signupemail} />} />
       </Routes>
     </Router>

@@ -15,15 +15,14 @@ const SignUpForm = ({onSignUp}) => {
       alert("Passwords don't match!");
       return;
     }
-    const apiURL = process.env.REACT_APP_API_URL;
-    const signupUrl = `${apiURL}/signup`;
+ 
     const formData = new FormData();
     const email_from_form = document.getElementById('email').value;
     formData.append('fname', fname);
     formData.append('lname', lname);
     formData.append('email', email);
     formData.append('password', password);
-    fetch(`${signupUrl}`, {
+    fetch('http://127.0.0.1:5000/signup', {
         method: 'POST',
         body: formData,
       })
