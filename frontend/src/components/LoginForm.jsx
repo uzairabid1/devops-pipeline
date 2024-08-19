@@ -23,12 +23,13 @@ const LoginForm = ({ onLogin }) => {
     .then((response) => response.json())
     .then((data) => {
       console.log('Success:', data);
-      const email = data.user['email']
+      const email = data.user['email'];
       
-      onLogin(email)
-      navigate('/')
-    
+      // Store the email in sessionStorage
+      sessionStorage.setItem('loggedInEmail', email);
       
+      onLogin(email);
+      navigate('/');
     })
     .catch((error) => {
       console.error('Error:', error);

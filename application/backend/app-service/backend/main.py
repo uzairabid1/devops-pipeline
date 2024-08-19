@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, make_response, request
+from flask import Flask, render_template, jsonify, make_response, request,session
 import requests
 import time
 from flask_mail import Mail, Message
@@ -23,6 +23,7 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
+app.secret_key=os.urandom(24)
 
 
 USERNAME = os.getenv('JENKINS_USERNAME')
@@ -246,6 +247,8 @@ def user_login():
                     'fname': user[2],
                     'lname': user[3]
                 }
+                session['user'] = user_details
+
                 return jsonify({'message': 'Login successful', 'user': user_details}), 200
             else:
                 return jsonify({'error': 'Invalid email or password'}), 401
@@ -255,6 +258,18 @@ def user_login():
         return jsonify({'error': 'An error occurred: ' + str(e)}), 500
     finally:
         conn.close()
+
+@app.route('/logout', methods=['POST'])
+def user_logout():
+    session.pop('user', None)
+    return jsonify({'message': 'Logged out successfully'}), 200
+
+@app.route('/session-check', methods=['GET'])
+def session_check():
+    if 'user' in session:
+        return jsonify({'user in session': session['user']}), 200
+    else:
+        return jsonify({'error': 'No active session'}), 401
 
 @app.route('/signup', methods=['POST'])
 def user_signup():

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import VerticalStepper from "./components/VerticalStepper";
 import CistepsData from "./components/CIStepper";
@@ -13,9 +13,10 @@ const App = () => {
   const [ciCompletedSteps, setCICompletedSteps] = useState([]);
   const [cdCompletedSteps, setCDCompletedSteps] = useState([]);
   const [Signupemail, setSignupemail] = useState("");
-  const [loggedInName, setLoggedInName] = useState("");
+  const [loggedInName, setLoggedInName] = useState(sessionStorage.getItem('loggedInEmail') || "");
   const [cdVisible, setCdVisible] = useState(false);
   const [ciVisible, setCiVisible] = useState(true);
+  
 
   const handleToggleCI = () => {
     setCiVisible(true);
@@ -27,9 +28,21 @@ const App = () => {
     setCdVisible(true);
   };
 
+  useEffect(() => {
+    const email = sessionStorage.getItem('loggedInEmail');
+    if (email) {
+      setLoggedInName(email);
+    }
+  }, []);
+
   const handleLogin = (data) => {
     setLoggedInName(data);
   };
+  const handleLogout = () => {
+    sessionStorage.removeItem('loggedInEmail');
+    setLoggedInName("");
+  };
+
 
   const handleSignup = (data) => {
     setSignupemail(data);
@@ -43,7 +56,7 @@ const App = () => {
           element={
             loggedInName ? (
               <>
-                <Navbar loggedInName={loggedInName} />
+                <Navbar loggedInName={loggedInName} onLogout={handleLogout} />
                 <div className="flex flex-col items-center justify-center mt-20 mb-20">
                   <h1 className="text-secondary-200 mb-10 text-4xl tracking-wide font-bold">
                     Pipeline Stages
