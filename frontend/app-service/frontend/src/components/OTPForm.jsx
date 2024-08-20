@@ -13,7 +13,7 @@ const OTPForm = ({ Signupemail }) => {
     const formData = new FormData();
     formData.append('otp', otp);
     const query_email = Signupemail;
-    fetch(`http://127.0.0.1:5000/verify?email=${query_email}`, {
+    fetch(`http://13.127.211.140/verify?email=${query_email}`, {
       method: 'POST',
       body: formData,
     })

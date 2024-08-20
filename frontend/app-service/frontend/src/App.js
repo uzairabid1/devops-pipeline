@@ -85,7 +85,7 @@ const App = () => {
                       </button>
                     </div>
                     <div style={{ display: ciVisible ? "block" : "none" }}>
-                      <BuildInfo apiurl="http://127.0.0.1:5000/ci_stages" />
+                      <BuildInfo apiurl="http://13.127.211.140/ci_stages" />
                       <VerticalStepper
                         stepsData={CistepsData}
                         onComplete={(completedStep) => {
@@ -94,12 +94,12 @@ const App = () => {
                             completedStep,
                           ]);
                         }}
-                        apiUrl="http://127.0.0.1:5000/ci_stages"
+                        apiUrl="http://13.127.211.140/ci_stages"
                         message="CI Stages Completed"
                       />
                     </div>
                     <div style={{ display: cdVisible ? "block" : "none" }}>
-                      <BuildInfo apiurl="http://127.0.0.1:5000/cd_stages" />
+                      <BuildInfo apiurl="http://13.127.211.140/cd_stages" />
                       <VerticalStepper
                         stepsData={CdstepsData}
                         onComplete={(completedStep) => {
@@ -108,7 +108,7 @@ const App = () => {
                             completedStep,
                           ]);
                         }}
-                        apiUrl="http://127.0.0.1:5000/cd_stages"
+                        apiUrl="http://13.127.211.140/cd_stages"
                         message="CD Stages Completed"
                         link="http://ac5163ec949904316b68ac1e0942fc1a-262678183.ap-south-1.elb.amazonaws.com:8080/webapp/"
                       />
