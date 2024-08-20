@@ -73,21 +73,29 @@ def add_header(response):
 
 def fetch_data_from_ci():
     while True:
-        response = requests.get(f'{JENKINS_URL}/job/register-app-ci/lastBuild/wfapi/describe',
+        response = requests.get('http://13.126.60.90:8080/job/register-app-ci/lastBuild/wfapi/describe',
                                 auth=(USERNAME, PASSWORD))
         data = response.json()
         
         build_id = data.get('id')
         build_status = data.get('status')
+        print(build_id)
         stages = []
         for stage in data.get('stages', []):
             duration = float(int(stage['durationMillis'])/1000)
             time_started = milis_to_datetime(int(stage['startTimeMillis']))
+            detailed_link = stage.get('_links').get('self').get('href')
+
+            log = {
+                "text": f"{JENKINS_URL}{detailed_link}"
+            }
+            
             stages.append({
                 'name':   stage['name'],
                 'status': stage['status'],
                 'duration': duration,
-                'time_started': time_started
+                'time_started': time_started,
+                "logs": log
             })
         
         result_ci = {
@@ -96,14 +104,13 @@ def fetch_data_from_ci():
             'stages': stages
         }
         
-        global latest_ci_stages
         latest_ci_stages = result_ci
+        return latest_ci_stages
         
-        time.sleep(0.10)
 
 def fetch_data_from_cd():
     while True:
-        response = requests.get(f'{JENKINS_URL}/job/gitops-register-app-cd/lastBuild/wfapi/describe',
+        response = requests.get('http://13.126.60.90:8080/job/gitops-register-app-cd/lastBuild/wfapi/describe',
                                 auth=(USERNAME, PASSWORD))
         data = response.json()
         build_id = int(data.get('id'))
@@ -112,11 +119,18 @@ def fetch_data_from_cd():
         for stage in data.get('stages', []):
             duration = float(int(stage['durationMillis'])/1000)
             time_started = milis_to_datetime(int(stage['startTimeMillis']))
+            detailed_link = stage.get('_links').get('self').get('href')
+
+            log = {
+                "text": f"{JENKINS_URL}{detailed_link}"
+            }
+            
             stages.append({
                 'name':   stage['name'],
                 'status': stage['status'],
                 'duration': duration,
-                'time_started': time_started
+                'time_started': time_started,
+                "logs": log
             })
         
         result_cd = {
@@ -125,11 +139,8 @@ def fetch_data_from_cd():
             'stages': stages
         }
         
-        global latest_cd_stages
         latest_cd_stages = result_cd
-        
-
-        time.sleep(0.10)
+        return latest_cd_stages
 
 
 @app.route('/test')
@@ -193,13 +204,9 @@ def fetch_data():
     return list_f
 
 
-fetch_data_ci = threading.Thread(target=fetch_data_from_ci)
-fetch_data_cd = threading.Thread(target=fetch_data_from_cd)
-fetch_data_ci.start()
-fetch_data_cd.start()
-
 latest_ci_stages = []
 latest_cd_stages = []
+
 
 @app.route('/')
 def index():
@@ -207,11 +214,11 @@ def index():
 
 @app.route('/ci_stages')
 def get_ci_stages():
-    return jsonify({'stages': latest_ci_stages})
+    return jsonify({'stages': fetch_data_from_ci()})
 
 @app.route('/cd_stages')
 def get_cd_stages():
-    return jsonify({'stages': latest_cd_stages})
+    return jsonify({'stages': fetch_data_from_cd()})
 
 @app.route('/login', methods=['POST'])
 def user_login():

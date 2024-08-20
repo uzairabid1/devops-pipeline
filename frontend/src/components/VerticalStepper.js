@@ -158,9 +158,9 @@ const VerticalStepper = ({ stepsData, onComplete, apiUrl, message, link }) => {
                     <Typography>View Logs</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography component="pre" className="whitespace-pre-wrap">
+                    <Link href={stage.logs.text}>
                       {stage.logs.text}
-                    </Typography>
+                    </Link>
                   </AccordionDetails>
                 </Accordion>
               )}
