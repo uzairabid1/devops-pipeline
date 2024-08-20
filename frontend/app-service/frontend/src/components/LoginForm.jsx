@@ -19,6 +19,9 @@ const LoginForm = ({ onLogin }) => {
     fetch('http://13.127.211.140/login', {
       method: 'POST',
       body: formData,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      }
     })
     .then((response) => response.json())
     .then((data) => {
