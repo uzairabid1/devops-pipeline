@@ -22,7 +22,7 @@ const SignUpForm = ({onSignUp}) => {
     formData.append('lname', lname);
     formData.append('email', email);
     formData.append('password', password);
-    fetch('http://127.0.0.1:5000/signup', {
+    fetch('http://13.127.211.140/signup', {
         method: 'POST',
         body: formData,
       })
