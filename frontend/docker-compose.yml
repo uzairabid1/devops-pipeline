@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  project-service:
+    build: ./app-service
+    container_name: app-service
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    environment:
+      - SERVER_NAME=project.automatedtaxcredits.com
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt/live/project.automatedtaxcredits.com/fullchain.pem:/etc/letsencrypt/live/project.automatedtaxcredits.com/fullchain.pem:ro
+      - /etc/letsencrypt/live/project.automatedtaxcredits.com/privkey.pem:/etc/letsencrypt/live/project.automatedtaxcredits.com/privkey.pem:ro
